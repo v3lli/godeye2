@@ -67,7 +67,7 @@ const showNav = ref(false);
 .header .open-nav{
     height: 34px;
     width: 44px;
-    background-color: #ffffff;
+    background-color: transparent;
     display: inline-block;
     border:none;
     border-radius: 4px;
@@ -79,7 +79,7 @@ const showNav = ref(false);
 .header .open-nav span{
     display: inline-block;
     width: 20px;
-    background-color: #4f67e4;
+    background-color: #ffffff;
     height: 2px;
     position: relative;
 }
@@ -121,14 +121,14 @@ const showNav = ref(false);
 }
 .header .nav .close-nav{
     position: absolute;
-    right:3rem;
-    top:3rem;
-    background-color: #4f67e9;
+    right:3.5rem;
+    top:2rem;
+    background-color: transparent;
     height: 40px;
     width: 40px;
     border:none;
     cursor: pointer;
-    font-size: 30px;
+    font-size: 2.5rem;
     color: #ffffff;
     transition: all 0.3s ease;
     transform: translateY(-55px);

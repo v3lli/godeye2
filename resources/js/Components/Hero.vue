@@ -1,34 +1,35 @@
 <script setup>
 import {computed} from "vue";
+import {ref} from "vue";
 
 defineProps({
-    imgUrl:{
+    backgroundStyle:{
         type: String,
         required: true
     },
 });
 
-
-// const bgImg = computed(() => ({
-//     backgroundImage: `url(${imgUrl})`,
-//     backgroundRepeat:"no-repeat",
-//     backgroundSize:"cover",
-//     backgroundAttachment:"fixed",
-//     backgroundPosition:"center",
+// const bgStyle = computed(() => ({
+//     backgroundImage: backgroundStyle,
+//     height: '100vh',
+//     width: '100%',
 // }));
+const bgImg = computed(() => ({
+    backgroundRepeat:"no-repeat",
+    backgroundSize:"cover",
+    backgroundAttachment:"fixed",
+    backgroundPosition:"center",
+}));
 </script>
 
 <template>
-    <div v-bind:style="{
-        backgroundImage: imgUrl,
-        backgroundColor:'black',
-    }" class="landing w-full">
+    <div class="landing w-full" :style="bgImg">
     </div>
 </template>
 
 <style scoped>
 .landing{
     height: 100vh;
-    width: 100%;
+    background-image: url("https://i.ibb.co/jJ2vN9B/IMG-3769.gif");
 }
 </style>
