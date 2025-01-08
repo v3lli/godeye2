@@ -1,19 +1,6 @@
 <script setup>
 import {computed} from "vue";
-import {ref} from "vue";
 
-defineProps({
-    backgroundStyle:{
-        type: String,
-        required: true
-    },
-});
-
-// const bgStyle = computed(() => ({
-//     backgroundImage: backgroundStyle,
-//     height: '100vh',
-//     width: '100%',
-// }));
 const bgImg = computed(() => ({
     backgroundRepeat:"no-repeat",
     backgroundSize:"cover",
