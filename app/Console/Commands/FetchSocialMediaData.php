@@ -54,41 +54,110 @@ class FetchSocialMediaData extends Command
         return 0;
     }
 
+    private function buildAuthorizationHeader($oauthParams)
+    {
+        // Start the header string
+        $header = 'OAuth ';
+
+        // Iterate through OAuth parameters to build the header string
+        $values = [];
+        foreach ($oauthParams as $key => $value) {
+            $encodedKey = rawurlencode($key); // Percent encode key
+            $encodedValue = rawurlencode($value); // Percent encode value
+            $values[] = "$encodedKey=\"$encodedValue\""; // Format key="value"
+        }
+
+        // Join all parameters with a comma and a space
+        $header .= implode(', ', $values);
+
+        return $header;
+    }
+
+    function generateOauthSignature($url, $method, $params, $consumerKey, $consumerSecret, $token, $tokenSecret)
+    {
+        ksort($params);
+
+        $parameterString = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+        $signatureBaseString = strtoupper($method) . '&' . rawurlencode($url) . '&' . rawurlencode($parameterString);
+
+        $signingKey = rawurlencode($consumerSecret) . '&' . rawurlencode($tokenSecret);
+        $signature = base64_encode(hash_hmac('sha1', $signatureBaseString, $signingKey, true));
+
+        dump($signature);
+        return $signature;
+    }
+
+
 
     private function fetchLikedTweets($twitterUserId): array
     {
-        $connection = new TwitterOAuth(
-            env('CONSUMER_KEY'),
-            env('CONSUMER_SECRET'),
-            env('TWITTER_ACCESS_TOKEN'),
-            env('TWITTER_TOKEN_SECRET')
-        );
-
         $url = 'https://api.twitter.com/2/users/' . $twitterUserId . '/liked_tweets';
-        $this->info("Requesting URL: " . $url);
 
+        $method = 'GET';
+        $consumerKey = env('CONSUMER_KEY');
+        $consumerSecret = env('CONSUMER_SECRET');
+        $token = env('TWITTER_ACCESS_TOKEN');
+        $tokenSecret = env('TWITTER_TOKEN_SECRET');
+
+        // Parameters for the request
         $params = [
             'tweet.fields' => 'text,created_at,attachments',
             'expansions' => 'attachments.media_keys',
-            'media.fields' => 'url,preview_image_url,type',
-            'max_results' => '5',
+            'media.fields' => 'url',
+            'max_results' => '70',
+            'oauth_consumer_key' => $consumerKey,
+            'oauth_token' => $token,
+            'oauth_signature_method' => 'HMAC-SHA1',
+            'oauth_timestamp' => time(),
+            'oauth_nonce' => uniqid(),
+            'oauth_version' => '1.0',
         ];
 
-        $response = $connection->get($url, $params);
-        $this->info(dump($response));
+        // Generate the OAuth signature
+        $params['oauth_signature'] = $this->generateOauthSignature($url, $method, $params, $consumerKey, $consumerSecret, $token, $tokenSecret);
+
+        // Build the Authorization header
+        $oauthparams = [
+            'oauth_consumer_key' => $params['oauth_consumer_key'],
+            'oauth_nonce' => $params['oauth_nonce'],
+            'oauth_signature' => $params['oauth_signature'],
+            'oauth_signature_method' => $params['oauth_signature_method'],
+            'oauth_timestamp' => $params['oauth_timestamp'],
+            'oauth_token' => $params['oauth_token'],
+            'oauth_version' => $params['oauth_version'],
+        ];
+        $authHeader = $this->buildAuthorizationHeader($oauthparams);
+        // Remove non-URL query parameters
+        unset($params['oauth_signature']);
+        unset($params['oauth_consumer_key']);
+        unset($params['oauth_token']);
+        unset($params['oauth_signature_method']);
+        unset($params['oauth_timestamp']);
+        unset($params['oauth_nonce']);
+        unset($params['oauth_version']);
+
+        // Perform the HTTP GET request
+        $response = Http::withHeaders([
+            'Authorization' => $authHeader,
+            'Content-Type' => 'application/json',
+        ])->get($url, $params)->json();
+
+
         $filteredData = [];
 
-        if (isset($response->data) && isset($response->includes->media)) {
-            $mediaMap = collect($response->includes->media)->keyBy('media_key');
-            foreach ($response->data as $tweet) {
-                if (isset($tweet->attachments->media_keys)) {
-                    foreach ($tweet->attachments->media_keys as $mediaKey) {
+        if (isset($response['data']) && isset($response['includes']['media'])) {
+            // Create a map of media items keyed by their media_key
+            $mediaMap = collect($response['includes']['media'])->keyBy('media_key');
+
+            foreach ($response['data'] as $tweet) {
+                if (isset($tweet['attachments']['media_keys'])) {
+                    foreach ($tweet['attachments']['media_keys'] as $mediaKey) {
                         if ($mediaMap->has($mediaKey)) {
                             $media = $mediaMap[$mediaKey];
-                            if ($media->type === 'photo') {
+                            if ($media['type'] === 'photo') {
                                 $filteredData[] = [
-                                    'text' => $tweet->text,
-                                    'image_url' => $media->url,
+                                    'text' => $tweet['text'],
+                                    'image_url' => $media['url'],
                                     'source' => 'twitter',
                                 ];
                             }
@@ -100,14 +169,10 @@ class FetchSocialMediaData extends Command
             $this->warn('No liked tweets with images found or an error occurred.');
         }
 
+
         return $filteredData;
     }
 
-//    private function arrayhelper($arr1, $arr2): array
-//    {
-//
-//
-//    }
     private function fetchInstagramMedia($accessToken): array
     {
         $url = "https://graph.instagram.com/me/media";
