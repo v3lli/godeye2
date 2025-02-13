@@ -25,6 +25,8 @@
         "@fortawesome/free-solid-svg-icons": "^6.7.2",
         "@fortawesome/vue-fontawesome": "^3.0.8",
         "dotenv": "^16.4.7",
-        "twitter-api-sdk": "^1.2.1"
+        "masonry-layout": "^4.2.2",
+        "twitter-api-sdk": "^1.2.1",
+        "vue-infinite-scroll": "^2.0.2"
     }
 }
