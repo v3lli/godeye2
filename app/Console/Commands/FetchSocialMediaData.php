@@ -36,15 +36,15 @@ class FetchSocialMediaData extends Command
             return 1;
         }
 
-        $this->info('Fetching up to 50 liked tweets...');
-        $twitterData = $this->fetchLikedTweets($twitterUid);
+//        $this->info('Fetching up to 50 liked tweets...');
+//        $twitterData = $this->fetchLikedTweets($twitterUid);
 
         $this->info('Fetching Instagram media...');
         $instagramData = $this->fetchInstagramMedia($igAct);
 
         $this->info('Combining data...');
-        $combinedData = $this->combineData($twitterData, $instagramData);
-
+//         $combinedData = $this->combineData($twitterData, $instagramData);
+        $combinedData = $instagramData;
         // Save to JSON file
         $this->info('Saving data to JSON...');
         $filePath = storage_path('app/social_media_data.json');
@@ -104,7 +104,7 @@ class FetchSocialMediaData extends Command
             'tweet.fields' => 'text,created_at,attachments',
             'expansions' => 'attachments.media_keys',
             'media.fields' => 'url',
-            'max_results' => '70',
+            'max_results' => '100',
             'oauth_consumer_key' => $consumerKey,
             'oauth_token' => $token,
             'oauth_signature_method' => 'HMAC-SHA1',
@@ -189,7 +189,7 @@ class FetchSocialMediaData extends Command
                     if (in_array($media['media_type'], ['IMAGE', 'CAROUSEL_ALBUM'])) {
                         $filteredData[] = [
                             'text' => $media['caption'] ?? '',
-                            'image_url' => $media['media_url'],
+                            'media_id' => $media['id'],
                             'source' => 'instagram',
                         ];
 

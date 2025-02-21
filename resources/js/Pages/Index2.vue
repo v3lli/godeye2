@@ -1,7 +1,8 @@
-<script setup>
-import { ref, watchEffect } from 'vue';
-import { Head } from '@inertiajs/vue3';
-import ImageGrid from '@/Components/ImageGrid.vue';
+ <script setup>
+import { ref, watchEffect, watch } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
+import FillScrNav from "@/Components/FillScrNav.vue";
+import ImageGrid2 from '@/Components/ImageGrid2.vue';
 import Hero from "@/Components/Hero.vue";
 
 // ✅ Receive `mediaData` from the backend as a prop
@@ -16,23 +17,48 @@ const mediaItems = ref([...props.mediaData.data]);
 const currentPage = ref(props.mediaData.current_page);
 const nextPageUrl = ref(props.mediaData.next_page_url);
 
-// ✅ Function to fetch next page
-const fetchNextPage = async () => {
-    if (!nextPageUrl.value) return; // Stop if no more pages
+// ** Watcher to detect new data and append to mediaItems **
+watch(
+    () => props.mediaData,
+    (newData) => {
+        if (newData?.data?.length) {
+            mediaItems.value.push(...newData.data); // Append new items
+            nextPageUrl.value = newData.next_page_url; // Update next page URL
+        }
+        console.log("New data received:", newData ); // Check response
+    },
+    { deep: true }
+);
+// Function to fetch next page
+const fetchNextPage = () => {
+    if (!nextPageUrl.value) return; // No more pages
 
-    try {
-        const response = await fetch(nextPageUrl.value);
-        const json = await response.json();
+    console.log("Fetching next page:", nextPageUrl.value);
 
-        // ✅ Append new items
-        mediaItems.value.push(...json.data);
-        currentPage.value = json.current_page;
-        nextPageUrl.value = json.next_page_url; // Update next page URL
-
-    } catch (error) {
-        console.error('Error loading more media:', error);
-    }
+    router.get(nextPageUrl.value, {}, {
+        preserveState: true,
+        preserveScroll: true,
+        only: ["mediaData"],
+    });
 };
+
+// const fetchNextPage = async () => {
+//     if (!nextPageUrl.value) return;
+//
+//     console.log("Fetching next page:", nextPageUrl.value); // Debugging
+//
+//     const response = await fetch(nextPageUrl.value);
+//     const json = await response.json();
+//
+//     console.log("New data received:", json); // Check response
+//
+//     if (json.data.length > 0) {
+//         mediaItems.value.push(...json.data); // Append new items
+//         nextPageUrl.value = json.next_page_url; // Update next page URL
+//     } else {
+//         nextPageUrl.value = null; // Stop fetching when no more pages
+//     }
+// };
 
 // ✅ Infinite Scroll - Detect when user scrolls near bottom
 const handleScroll = () => {
@@ -50,10 +76,11 @@ watchEffect(() => {
 
 <template>
     <Head title="Media Gallery" />
+    <FillScrNav/>
     <Hero background-style=""/>
     <div>
         <!-- ✅ Pass `mediaItems` to ImageGrid -->
-        <ImageGrid :media-items="mediaItems" />
+        <ImageGrid2 :items="mediaItems" />
 
         <!-- ✅ Load More Button for Manual Loading -->
         <button v-if="nextPageUrl" @click="fetchNextPage" class="load-more">
