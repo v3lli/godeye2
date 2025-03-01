@@ -1,4 +1,4 @@
- <script setup>
+<script setup>
 import { ref, watchEffect, watch } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import FillScrNav from "@/Components/FillScrNav.vue";
@@ -78,8 +78,9 @@ watchEffect(() => {
     <Head title="Media Gallery" />
     <FillScrNav/>
     <Hero background-style=""/>
-    <div>
+    <div class="items-center justify-center flex flex-col">
         <!-- ✅ Pass `mediaItems` to ImageGrid -->
+         <span class="my-b mt-10 uppercase text-xl text-gray-500">Featured Works</span>
         <ImageGrid2 :items="mediaItems" />
 
         <!-- ✅ Load More Button for Manual Loading -->
