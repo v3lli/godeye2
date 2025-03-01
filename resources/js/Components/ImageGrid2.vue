@@ -18,8 +18,8 @@ watch(
     { deep: true }
 );
 
-const firstFive = computed(() => mediaItems.value.slice(0, 5));
-const nextFive = computed(() => mediaItems.value.slice(5, 10));
+const firstFive = computed(() => mediaItems.value.slice(0, 10));
+const nextFive = computed(() => mediaItems.value.slice(10, 20));
 
 const selectedImage = ref(null);
 const currentIndex = ref(0);
@@ -72,11 +72,11 @@ onUnmounted(() => {
     <div class="flex w-full px-5 gap-5 mt-10">
         <div class="w-1/2 space-y-24 p-20">
             <div v-for="(item, index) in firstFive" :key="index" class="text-center">
-                <img 
-                    :src="item.image_url" 
-                    :alt="item.text" 
+                <img
+                    :src="item.image_url"
+                    :alt="item.text"
                     class="w-full rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
-                    @click="openPreview(index)" 
+                    @click="openPreview(index)"
                 />
                 <p class="mt-10 text-gray-500">{{ item.text }}</p>
             </div>
@@ -86,11 +86,11 @@ onUnmounted(() => {
 
         <div class="w-1/2 space-y-24 p-20">
             <div v-for="(item, index) in nextFive" :key="index" class="text-center">
-                <img 
-                    :src="item.image_url" 
-                    :alt="item.text" 
+                <img
+                    :src="item.image_url"
+                    :alt="item.text"
                     class="w-full rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
-                    @click="openPreview(index + 5)" 
+                    @click="openPreview(index + 5)"
                 />
                 <p class="mt-2 text-gray-500">{{ item.text }}</p>
             </div>
@@ -103,15 +103,15 @@ onUnmounted(() => {
 
             <img :src="selectedImage" class="w-full max-h-[80vh] rounded-lg shadow-lg" />
 
-            <button 
-                v-if="currentIndex > 0" 
-                @click="prevImage" 
+            <button
+                v-if="currentIndex > 0"
+                @click="prevImage"
                 class="absolute left-7 top-1/2 transform -translate-y-1/2 text-white text-3xl bg-gray-700 bg-opacity-50 p-2 rounded-full hover:bg-opacity-75">
                 &#10094;
             </button>
-            <button 
-                v-if="currentIndex < mediaItems.length - 1" 
-                @click="nextImage" 
+            <button
+                v-if="currentIndex < mediaItems.length - 1"
+                @click="nextImage"
                 class="absolute right-7 top-1/2 transform -translate-y-1/2 text-white text-3xl bg-gray-700 bg-opacity-50 p-2 rounded-full hover:bg-opacity-75">
                 &#10095;
             </button>

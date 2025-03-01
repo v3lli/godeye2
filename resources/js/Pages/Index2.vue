@@ -80,7 +80,7 @@ watchEffect(() => {
     <Hero background-style=""/>
     <div class="items-center justify-center flex flex-col">
         <!-- ✅ Pass `mediaItems` to ImageGrid -->
-         <span class="my-b mt-10 uppercase text-xl text-gray-500">Featured Works</span>
+         <span class="my-b mt-10 uppercase text-xl text-gray-500">Current Mood</span>
         <ImageGrid2 :items="mediaItems" />
 
         <!-- ✅ Load More Button for Manual Loading -->
