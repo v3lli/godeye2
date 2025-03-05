@@ -28,7 +28,6 @@ const secondColumn = computed(() => {
     return items;
 });
 
-// Watch for new items being added
 watch(
     () => props.newItems,
     (newItems) => {
@@ -36,9 +35,7 @@ watch(
         if (newItems !== null) {
             const array = Object.keys(newItems).map(key => ({ id: key, ...newItems[key] }));
             mediaItems.value = [...mediaItems.value, ...array];
-           
-            // Notify parent that items have been added
-            emit('itemsAdded');
+                       emit('itemsAdded');
         }
     },
     { immediate: true }
