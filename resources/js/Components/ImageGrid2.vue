@@ -90,7 +90,7 @@ onUnmounted(() => {
                     :src="item.image_url"
                     :alt="item.text"
                     class="w-full rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
-                    @click="openPreview(index + 5)"
+                    @click="openPreview(index + 10)"
                 />
                 <p class="mt-2 text-gray-500">{{ item.text }}</p>
             </div>

@@ -22,10 +22,11 @@ watch(
     () => props.mediaData,
     (newData) => {
         if (newData?.data?.length) {
+
             mediaItems.value.push(...newData.data); // Append new items
             nextPageUrl.value = newData.next_page_url; // Update next page URL
         }
-        console.log("New data received:", newData ); // Check response
+        console.log("New data received:", mediaItems ); // Check response
     },
     { deep: true }
 );
