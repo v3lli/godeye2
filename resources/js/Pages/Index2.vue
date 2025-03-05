@@ -17,48 +17,57 @@ const mediaItems = ref([...props.mediaData.data]);
 const currentPage = ref(props.mediaData.current_page);
 const nextPageUrl = ref(props.mediaData.next_page_url);
 
-// ** Watcher to detect new data and append to mediaItems **
+// ✅ Keep track of new items that should be added to the grid
+const newItemsToAdd = ref(null);
+
+// ✅ Loading state
+const isLoading = ref(false);
+
+// ** Watcher to detect new data and process it **
 watch(
     () => props.mediaData,
     (newData) => {
-        if (newData?.data?.length) {
-            mediaItems.value.push(...newData.data); // Append new items
-            nextPageUrl.value = newData.next_page_url; // Update next page URL
+        if (newData.data) {
+            newItemsToAdd.value = newData.data;
+            
+            // Update pagination info
+            currentPage.value = newData.current_page;
+            nextPageUrl.value = newData.next_page_url;
+            
+            // Set loading to false when data arrives
+            isLoading.value = false;
         }
-        console.log("New data received:", newData ); // Check response
     },
     { deep: true }
 );
+
+// After we've pushed the items to the child component, reset newItemsToAdd
+const onItemsAdded = () => {
+    newItemsToAdd.value = null;
+};
+
 // Function to fetch next page
 const fetchNextPage = () => {
-    if (!nextPageUrl.value) return; // No more pages
-
-    console.log("Fetching next page:", nextPageUrl.value);
-
+    if (!nextPageUrl.value || isLoading.value) {
+        return;
+    }
+    
+    // Set loading state to true before fetching
+    isLoading.value = true;
+    
     router.get(nextPageUrl.value, {}, {
         preserveState: true,
         preserveScroll: true,
         only: ["mediaData"],
+        onSuccess: () => {
+            // Loading state will be set to false when the watcher detects new data
+        },
+        onError: () => {
+            // Make sure to set loading to false even on error
+            isLoading.value = false;
+        }
     });
 };
-
-// const fetchNextPage = async () => {
-//     if (!nextPageUrl.value) return;
-//
-//     console.log("Fetching next page:", nextPageUrl.value); // Debugging
-//
-//     const response = await fetch(nextPageUrl.value);
-//     const json = await response.json();
-//
-//     console.log("New data received:", json); // Check response
-//
-//     if (json.data.length > 0) {
-//         mediaItems.value.push(...json.data); // Append new items
-//         nextPageUrl.value = json.next_page_url; // Update next page URL
-//     } else {
-//         nextPageUrl.value = null; // Stop fetching when no more pages
-//     }
-// };
 
 // ✅ Infinite Scroll - Detect when user scrolls near bottom
 const handleScroll = () => {
@@ -79,12 +88,21 @@ watchEffect(() => {
     <FillScrNav/>
     <Hero background-style=""/>
     <div class="items-center justify-center flex flex-col">
-        <!-- ✅ Pass `mediaItems` to ImageGrid -->
-         <span class="my-b mt-10 uppercase text-xl text-gray-500">Current Mood</span>
-        <ImageGrid2 :items="mediaItems" />
+        <span class="my-b mt-10 uppercase text-xl text-gray-500">Current Mood</span>
+        <ImageGrid2 
+            :items="mediaItems" 
+            :new-items="newItemsToAdd" 
+            @items-added="onItemsAdded" 
+        />
 
-        <!-- ✅ Load More Button for Manual Loading -->
-        <button v-if="nextPageUrl" @click="fetchNextPage" class="load-more">
+        <!-- Loading spinner -->
+        <div v-if="isLoading" class="spinner-container">
+            <div class="spinner"></div>
+            <p class="mt-3 text-gray-500">Loading more images...</p>
+        </div>
+
+        <!-- Only show load more button when not loading -->
+        <button v-if="nextPageUrl && !isLoading" @click="fetchNextPage" class="load-more">
             Load More
         </button>
     </div>
@@ -99,5 +117,30 @@ watchEffect(() => {
     color: white;
     border: none;
     cursor: pointer;
+}
+
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #333;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>
