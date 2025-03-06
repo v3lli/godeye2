@@ -6,21 +6,42 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    newItems: {
+        type: Array,
+        default: null,
+    }
 });
 
+const emit = defineEmits(['itemsAdded']);
+
+// Store all media items
 const mediaItems = ref([...props.items]);
 
+// Compute the items to display in each column
+const firstColumn = computed(() => {
+    const items = mediaItems.value.filter((_, i) => i % 2 === 0);
+    return items;
+});
+
+const secondColumn = computed(() => {
+    const items = mediaItems.value.filter((_, i) => i % 2 === 1);
+    return items;
+});
+
 watch(
-    () => props.items,
+    () => props.newItems,
     (newItems) => {
-        mediaItems.value = [...newItems];
+
+        if (newItems !== null) {
+            const array = Object.keys(newItems).map(key => ({id: key, ...newItems[key]}));
+            mediaItems.value = [...mediaItems.value, ...array];
+            emit('itemsAdded');
+        }
     },
-    { deep: true }
+    {immediate: true}
 );
 
-const firstFive = computed(() => mediaItems.value.slice(0, 10));
-const nextFive = computed(() => mediaItems.value.slice(10, 20));
-
+// Modal/preview functionality
 const selectedImage = ref(null);
 const currentIndex = ref(0);
 const isOpen = ref(false);
@@ -71,12 +92,13 @@ onUnmounted(() => {
 <template>
     <div class="flex w-full px-5 gap-5 mt-10">
         <div class="w-1/2 space-y-24 p-20">
-            <div v-for="(item, index) in firstFive" :key="index" class="text-center">
+            <div v-for="(item, index) in firstColumn" :key="'first-' + index" class="text-center">
                 <img
                     :src="item.image_url"
                     :alt="item.text"
-                    class="w-full rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
-                    @click="openPreview(index)"
+                    class="rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
+                    style="width: auto; height: auto; max-width: 100%; max-height: 100%;"
+                    @click="openPreview(index * 2)"
                 />
                 <p class="mt-10 text-gray-500">{{ item.text }}</p>
             </div>
@@ -85,23 +107,24 @@ onUnmounted(() => {
         <div class="w-[4px] bg-gray-200"></div>
 
         <div class="w-1/2 space-y-24 p-20">
-            <div v-for="(item, index) in nextFive" :key="index" class="text-center">
+            <div v-for="(item, index) in secondColumn" :key="'second-' + index" class="text-center">
                 <img
                     :src="item.image_url"
                     :alt="item.text"
                     class="w-full rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
-                    @click="openPreview(index + 10)"
+                    @click="openPreview(index * 2 + 1)"
                 />
                 <p class="mt-2 text-gray-500">{{ item.text }}</p>
             </div>
         </div>
     </div>
 
+    <!-- Image preview modal -->
     <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
         <div class="relative p-5 w-full max-w-2xl">
             <button @click="closePreview" class="absolute top-5 right-10 text-white text-3xl">&times;</button>
 
-            <img :src="selectedImage" class="w-full max-h-[80vh] rounded-lg shadow-lg" />
+            <img :src="selectedImage" class="w-full max-h-[80vh] rounded-lg shadow-lg"/>
 
             <button
                 v-if="currentIndex > 0"
