@@ -124,7 +124,7 @@ onUnmounted(() => {
         <div class="relative p-5 w-full max-w-2xl">
             <button @click="closePreview" class="absolute top-5 right-10 text-white text-3xl">&times;</button>
 
-            <img :src="selectedImage" class="w-full max-h-[80vh] rounded-lg shadow-lg"/>
+            <img :src="selectedImage" class="w-full h-full rounded-lg shadow-lg"/>
 
             <button
                 v-if="currentIndex > 0"
