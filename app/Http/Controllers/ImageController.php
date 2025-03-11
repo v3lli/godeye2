@@ -12,7 +12,7 @@ class ImageController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Image::all());
     }
 
     /**
@@ -28,15 +28,31 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+           'album_id' => 'required|exists:albums,id',
+           'caption' => 'nullable|string',
+           'image_url' => 'required|string',
+        ]);
+
+        $image = Image::create($request->all());
+
+        return response()->json([
+            'message' => 'image created successfully',
+            'image' => $image
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Image $image)
+    public function show($id)
     {
-        //
+        $image = Image::find($id);
+
+        if(!$image){
+            return response()->json(['message' => 'Image not found'], 404);
+        }
+        return response()->json($image);
     }
 
     /**
