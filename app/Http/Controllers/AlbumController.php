@@ -13,7 +13,10 @@ class AlbumController extends Controller
      */
     public function index()
     {
-        return response()->json(Album::all());
+        $album = Album::all();
+        return Inertia::render('Albums', [
+            'album' => $album,
+        ]);
     }
 
     /**
@@ -21,7 +24,7 @@ class AlbumController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('AlbumIntake');
     }
 
     /**
@@ -32,6 +35,8 @@ class AlbumController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'year' => 'required|integer',
+            'completed' => 'required|boolean'
         ]);
 
         $album = Album::create($request->all());

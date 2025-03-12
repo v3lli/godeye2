@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use App\Models\Image;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ImageController extends Controller
 {
@@ -20,7 +22,7 @@ class ImageController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('ImageIntake');
     }
 
     /**
@@ -53,6 +55,16 @@ class ImageController extends Controller
             return response()->json(['message' => 'Image not found'], 404);
         }
         return response()->json($image);
+    }
+
+    public function getByAlbum($albumid)
+    {
+
+        $album = Album::with('images')->find($albumid);
+        return Inertia::render('AlbumGallery', [
+            'album' => $album,
+        ]);
+
     }
 
     /**

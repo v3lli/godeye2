@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('album_id')->nullable();
             $table->text('caption')->nullable(); // Caption (optional)
             $table->string('image_url');
+            $table->boolean('print');
             $table->timestamps();
 
             $table->foreign('album_id')->references('id')->on('albums')->onDelete('cascade');

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\ImageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -29,5 +31,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::post('/', [AlbumController::class, 'Index'])->name('index.index');
+Route::get('/album/', [AlbumController::class, 'index'])->name('album.index');
+Route::get('/album/create', [AlbumController::class, 'create'])->name('album.create');
+Route::post('/album/store', [AlbumController::class, 'store'])->name('album.store');
+
+Route::get('/image/', [ImageController::class, 'index'])->name('image.index');
+Route::get('/image/create', [ImageController::class, 'create'])->name('image.create');
+Route::get('/album/{album_id}/image', [ImageController::class, 'getByAlbum'])->name('image.getByAlbum');
+Route::post('/image/store', [ImageController::class, 'store'])->name('image.store');
 require __DIR__.'/auth.php';
