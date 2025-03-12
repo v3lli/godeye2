@@ -21,7 +21,7 @@ const submit = () => {
 
 <template>
     <div class="max-w-2xl mx-auto bg-white p-6 shadow-lg rounded-lg mt-10">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Create New Album</h2>
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Create New Image</h2>
 
         <form @submit.prevent="submit" class="space-y-4">
             <!-- Title Field -->
