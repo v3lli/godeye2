@@ -12,7 +12,7 @@ class Album extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'year','completed'];
+    protected $fillable = ['title', 'description', 'year', 'cover', 'completed'];
 
     /**
      * Define the relationship: An album has many images.

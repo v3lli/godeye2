@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title'); // Album title
             $table->text('description')->nullable();
             $table->integer('year');
+            $table->string('cover');
             $table->boolean('completed');
             $table->timestamps();
         });
