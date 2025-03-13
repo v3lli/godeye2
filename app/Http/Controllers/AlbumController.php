@@ -15,7 +15,7 @@ class AlbumController extends Controller
     {
         $album = Album::all();
         return Inertia::render('Albums', [
-            'album' => $album,
+            'albums' => $album,
         ]);
     }
 
