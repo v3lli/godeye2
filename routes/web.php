@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/album/', [AlbumController::class, 'index'])->name('album.index');
+Route::get('/albums/', [AlbumController::class, 'index'])->name('album.index');
 Route::get('/album/create', [AlbumController::class, 'create'])->name('album.create');
 Route::post('/album/store', [AlbumController::class, 'store'])->name('album.store');
 
