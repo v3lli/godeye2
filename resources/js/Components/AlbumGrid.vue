@@ -104,7 +104,6 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <div class="w-[4px] bg-gray-200"></div>
 
         <div class="w-1/2 space-y-24 p-20">
             <div v-for="(item, index) in secondColumn" :key="'second-' + index" class="text-center">
