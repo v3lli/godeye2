@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/albums/', [AlbumController::class, 'index'])->name('album.index');
+Route::get('/albums/', [ImageController::class, 'getAllByAlbum'])->name('image.getAllByAlbum');
 Route::get('/albums/create', [AlbumController::class, 'create'])->name('album.create');
 Route::post('/albums/store', [AlbumController::class, 'store'])->name('album.store');
 
@@ -39,4 +39,5 @@ Route::get('/image/', [ImageController::class, 'index'])->name('image.index');
 Route::get('/image/create', [ImageController::class, 'create'])->name('image.create');
 Route::get('/albums/{album_id}/image', [ImageController::class, 'getByAlbum'])->name('image.getByAlbum');
 Route::post('/image/store', [ImageController::class, 'store'])->name('image.store');
+
 require __DIR__.'/auth.php';

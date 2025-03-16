@@ -61,7 +61,17 @@ class ImageController extends Controller
     {
 
         $album = Album::with('images')->find($albumid);
-        return Inertia::render('AlbumGallery', [
+        return Inertia::render('Albums', [
+            'albums' => $album,
+        ]);
+
+    }
+
+    public function getAllByAlbum()
+    {
+
+        $album = Album::with('images')->get();
+        return Inertia::render('Albums', [
             'album' => $album,
         ]);
 

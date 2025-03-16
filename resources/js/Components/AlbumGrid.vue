@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from "vue";
+import axios from "axios";
 
 const props = defineProps({
     items: {
@@ -47,10 +48,16 @@ const currentIndex = ref(0);
 const isOpen = ref(false);
 
 // Open the image preview modal
-const openPreview = (index) => {
-    currentIndex.value = index;
-    selectedImage.value = mediaItems.value[index].image_url;
-    isOpen.value = true;
+const openPreview = async (index) => {
+    // const id = props.items[index].id;
+    console.log(index);
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/albums/${index}/image`);
+            console.log(response);
+            console.log("API Response:", response.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
 };
 
 // Close the modal
@@ -87,6 +94,8 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener("keydown", handleKeyDown);
 });
+
+
 </script>
 
 <template>
@@ -94,11 +103,11 @@ onUnmounted(() => {
         <div class="w-1/2 space-y-24 p-20">
             <div v-for="(item, index) in firstColumn" :key="'first-' + index" class="text-center">
                 <img
-                    :src="item.cover"
+                    :src="item[index].cover"
                     :alt="item.title"
                     class="rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
                     style="width: auto; height: auto; max-width: 100%; max-height: 100%;"
-                    @click="openPreview(index * 2)"
+                    @click="openPreview(items[index].id)"
                 />
                 <p class="mt-10 text-gray-500">{{ item.title }}</p>
             </div>
@@ -108,10 +117,10 @@ onUnmounted(() => {
         <div class="w-1/2 space-y-24 p-20">
             <div v-for="(item, index) in secondColumn" :key="'second-' + index" class="text-center">
                 <img
-                    :src="item.image_url"
-                    :alt="item.text"
+                    :src="item[index].cover"
+                    :alt="item.title"
                     class="w-full rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
-                    @click="openPreview(index * 2 + 1)"
+                    @click="openPreview(items[index + 1].id)"
                 />
                 <p class="mt-2 text-gray-500">{{ item.text }}</p>
             </div>
