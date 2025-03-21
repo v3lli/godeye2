@@ -3,6 +3,7 @@ import { ref, watchEffect, watch } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import FillScrNav from "@/Components/FillScrNav.vue";
 import ImageGrid2 from '@/Components/ImageGrid2.vue';
+import Footer from '@/Components/Footer.vue';
 import Hero from "@/Components/Hero.vue";
 
 // ✅ Receive `mediaData` from the backend as a prop
@@ -106,6 +107,7 @@ watchEffect(() => {
             Load More
         </button>
     </div>
+    <Footer />
 </template>
 
 <style scoped>

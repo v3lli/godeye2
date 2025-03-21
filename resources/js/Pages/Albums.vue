@@ -4,6 +4,7 @@ import { Head, router } from '@inertiajs/vue3';
 import FillScrNav from "@/Components/FillScrNav.vue";
 import AlbumGrid from '@/Components/AlbumGrid.vue';
 import Banner from "@/Components/Banner.vue";
+import Footer from '@/Components/Footer.vue';
 
 const props = defineProps({
     album: Array
@@ -20,7 +21,7 @@ const props = defineProps({
         <span class="my-b mt-10 uppercase text-xl text-gray-500">Collections</span>
         <AlbumGrid :items="album"/>
     </div>
-
+    <Footer />
 </template>
 
 <style scoped>
