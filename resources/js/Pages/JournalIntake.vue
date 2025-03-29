@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
-import { QuillEditor } from "vue-quill-editor";
-import 'quill/dist/quill.snow.css'; // Import Quill's CSS
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 const form = useForm({
     title: "",
@@ -51,7 +51,7 @@ const submit = () => {
             <div class="form-group">
                 <label for="text" class="block text-gray-700 font-medium">Journal Entry</label>
                 <QuillEditor
-                    v-model:content="form.text"
+                    v-model="form.text"
                     theme="snow"
                     :toolbar="[
                         [{ header: [1, 2, 3, 4, 5, 6, false] }],
