@@ -26,7 +26,10 @@
         "@fortawesome/vue-fontawesome": "^3.0.8",
         "dotenv": "^16.4.7",
         "masonry-layout": "^4.2.2",
+        "quill": "^2.0.3",
         "twitter-api-sdk": "^1.2.1",
-        "vue-infinite-scroll": "^2.0.2"
+        "vue-infinite-scroll": "^2.0.2",
+        "vue-quill-editor": "^3.0.6",
+        "vue3-quill": "^0.3.1"
     }
 }

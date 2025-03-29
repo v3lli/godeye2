@@ -1,19 +1,20 @@
 <script setup>
 import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
+import { QuillEditor } from "vue-quill-editor";
+import 'quill/dist/quill.snow.css'; // Import Quill's CSS
 
 const form = useForm({
     title: "",
-    description: "",
-    year: "",
+    subtitle: "",
+    text: "",
     cover: "",
-    completed: false,
 });
 
 const submit = () => {
-    form.post(route("album.store"), {
+    form.post(route("journal.store"), {
         onSuccess: () => {
-            alert("Album created successfully!");
+            alert("Journal Entry created successfully!");
             form.reset();
         },
     });
@@ -22,7 +23,7 @@ const submit = () => {
 
 <template>
     <div class="max-w-2xl mx-auto bg-white p-6 shadow-lg rounded-lg mt-10">
-        <h2 class="text-2xl font-bold mb-4 text-gray-800">Create New Album</h2>
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Create New Journal Entry</h2>
 
         <form @submit.prevent="submit" class="space-y-4">
             <!-- Title Field -->
@@ -36,40 +37,41 @@ const submit = () => {
                 />
             </div>
 
-            <!-- Description Field -->
             <div>
-                <label for="description" class="block text-gray-700 font-medium">Description</label>
-                <textarea
-                    v-model="form.description"
-                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
-                    rows="3"
-                    required
-                ></textarea>
-            </div>
-
-            <!-- Year Field -->
-            <div>
-                <label for="year" class="block text-gray-700 font-medium">Year</label>
+                <label for="subtitle" class="block text-gray-700 font-medium">Subtitle</label>
                 <input
-                    v-model="form.year"
-                    type="number"
+                    v-model="form.subtitle"
+                    type="text"
                     class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
                     required
                 />
             </div>
 
-            <!-- Completed Checkbox -->
-            <div class="flex items-center">
-                <input
-                    v-model="form.completed"
-                    type="checkbox"
-                    class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+            <!-- Journal Entry Field -->
+            <div class="form-group">
+                <label for="text" class="block text-gray-700 font-medium">Journal Entry</label>
+                <QuillEditor
+                    v-model:content="form.text"
+                    theme="snow"
+                    :toolbar="[
+                        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                        [{ font: [] }],
+                        [{ size: ['small', false, 'large', 'huge'] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ color: [] }, { background: [] }],
+                        [{ script: 'sub' }, { script: 'super' }],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ indent: '-1' }, { indent: '+1' }],
+                        [{ align: [] }],
+                        ['blockquote', 'code-block'],
+                        ['link', 'image', 'video'],
+                        ['clean']
+                    ]"
+                    class="h-64"
                 />
-                <label for="completed" class="ml-2 text-gray-700">Completed</label>
             </div>
-
             <div>
-                <label for="image_url" class="block text-gray-700 font-medium">Image URL</label>
+                <label for="cover" class="block text-gray-700 font-medium">Cover Image</label>
                 <input
                     v-model="form.cover"
                     type="text"
@@ -85,9 +87,15 @@ const submit = () => {
                     class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-200"
                     :disabled="form.processing"
                 >
-                    Save Album
+                    Save Journal Entry
                 </button>
             </div>
         </form>
     </div>
 </template>
+
+<style scoped>
+.ql-container {
+    height: 200px;
+}
+</style>
