@@ -4,14 +4,31 @@ import { useForm } from "@inertiajs/vue3";
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
+// Add this - keep a reference to the editor
+const quillEditorRef = ref(null);
+
 const form = useForm({
     title: "",
     subtitle: "",
     text: "",
     cover_image: "",
+    html_content: "",
 });
 
+const onEditorChange = (content) => {
+    form.text = content;
+    
+    if (quillEditorRef.value && quillEditorRef.value.getHTML) {
+        form.html_content = quillEditorRef.value.getHTML();
+        console.log('HTML content:', form.html_content);
+    }
+    
+};
+
 const submit = () => {
+    
+    form.text = form.html_content
+
     form.post(route("journal.store"), {
         onSuccess: () => {
             alert("Journal Entry created successfully!");
@@ -25,7 +42,7 @@ const submit = () => {
     <div class="max-w-2xl mx-auto bg-white p-6 shadow-lg rounded-lg mt-10">
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Create New Journal Entry</h2>
 
-        <form @submit.prevent="submit" class="space-y-4">
+        <form @submit.prevent="" class="space-y-4">
             <!-- Title Field -->
             <div>
                 <label for="title" class="block text-gray-700 font-medium">Title</label>
@@ -51,7 +68,9 @@ const submit = () => {
             <div class="form-group">
                 <label for="text" class="block text-gray-700 font-medium">Journal Entry</label>
                 <QuillEditor
-                    v-model="form.text"
+                    ref="quillEditorRef"
+                    :content="form.text"
+                    @update:content="onEditorChange"
                     theme="snow"
                     :toolbar="[
                         [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -84,6 +103,7 @@ const submit = () => {
             <div>
                 <button
                     type="submit"
+                    @click="submit"
                     class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-200"
                     :disabled="form.processing"
                 >
