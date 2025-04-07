@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Album;
 use App\Models\Journal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class JournalController extends Controller
@@ -33,14 +33,43 @@ class JournalController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string',
-            'cover' => 'required|string',
-            'text' => 'required|longtext'
+        Log::info('Journal store method called', ['data' => $request->all()]);
+
+        // More detailed logging to debug the text content
+        Log::info('Text content details', [
+            'text_content' => $request->input('text'),
+            'text_type' => gettype($request->input('text')),
+            'text_empty' => empty($request->input('text')),
+            'text_length' => is_string($request->input('text')) ? strlen($request->input('text')) : 'not a string'
         ]);
 
-        $journal = Journal::create($request->all());
+        // Handle Quill content which might be a Delta object, JSON string, or HTML
+        $textContent = $request->input('text');
+        if (is_array($textContent)) {
+            // If Quill sends a Delta object, encode it to JSON
+            $request->merge(['text' => json_encode($textContent)]);
+        } elseif (is_string($textContent) && (
+                $textContent === '<p><br></p>' ||
+                $textContent === '<p></p>' ||
+                trim($textContent) === ''
+            )) {
+            // Handle "empty" HTML content from Quill
+            return response()->json([
+                'message' => 'Journal text cannot be empty',
+                'errors' => ['text' => ['The journal content field is required.']]
+            ], 422);
+        }
+
+        // Modified validation with more flexibility for text field
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string',
+            'cover_image' => 'required|string',
+            'text' => 'required' // No string type validation to accept various formats
+        ]);
+
+        $journal = Journal::create($validated);
+        Log::info('Journal entry created successfully', ['entry' => $journal]);
 
         return response()->json([
             'message' => 'Journal entry created successfully',

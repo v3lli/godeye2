@@ -1,8 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useForm } from "@inertiajs/vue3";
-import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 const form = useForm({
     title: "",
@@ -11,12 +11,41 @@ const form = useForm({
     cover_image: "",
 });
 
+// Create a ref for the QuillEditor component
+const quillEditorRef = ref(null);
+
+// Handle content changes from the editor
+const onEditorContentUpdated = (content) => {
+    // Update the form with HTML content
+    if (content) {
+        // If the content is just the default empty editor state, use empty string
+        const htmlContent = typeof content === 'object' ? content.html : content;
+        form.text = (htmlContent === '<p><br></p>' || htmlContent === '<p></p>') ? '' : htmlContent;
+        console.log('Editor content updated:', form.text);
+    }
+};
+
 const submit = () => {
+    // Final check to ensure text isn't null or empty placeholder
+    if (!form.text || form.text === '<p><br></p>' || form.text === '<p></p>') {
+        form.text = ''; // Set to empty string instead of null
+    }
+
+    console.log('Submitting form with text:', form.text);
+
     form.post(route("journal.store"), {
         onSuccess: () => {
             alert("Journal Entry created successfully!");
             form.reset();
+
+            // Reset the editor content after form submission
+            if (quillEditorRef.value) {
+                quillEditorRef.value.setContents('');
+            }
         },
+        onError: (errors) => {
+            console.error('Form submission errors:', errors);
+        }
     });
 };
 </script>
@@ -35,6 +64,7 @@ const submit = () => {
                     class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
                     required
                 />
+                <p v-if="form.errors.title" class="text-red-500 text-sm mt-1">{{ form.errors.title }}</p>
             </div>
 
             <div>
@@ -45,13 +75,16 @@ const submit = () => {
                     class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
                     required
                 />
+                <p v-if="form.errors.subtitle" class="text-red-500 text-sm mt-1">{{ form.errors.subtitle }}</p>
             </div>
 
             <!-- Journal Entry Field -->
             <div class="form-group">
                 <label for="text" class="block text-gray-700 font-medium">Journal Entry</label>
                 <QuillEditor
-                    v-model="form.text"
+                    ref="quillEditorRef"
+                    v-model:content="form.text"
+                    @update:content="onEditorContentUpdated"
                     theme="snow"
                     :toolbar="[
                         [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -69,7 +102,9 @@ const submit = () => {
                     ]"
                     class="h-64"
                 />
+                <p v-if="form.errors.text" class="text-red-500 text-sm mt-1">{{ form.errors.text }}</p>
             </div>
+
             <div>
                 <label for="cover" class="block text-gray-700 font-medium">Cover Image</label>
                 <input
@@ -78,6 +113,7 @@ const submit = () => {
                     class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
                     required
                 />
+                <p v-if="form.errors.cover_image" class="text-red-500 text-sm mt-1">{{ form.errors.cover_image }}</p>
             </div>
 
             <!-- Submit Button -->
