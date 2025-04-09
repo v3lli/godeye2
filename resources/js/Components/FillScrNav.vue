@@ -28,6 +28,7 @@ const showNav = ref(false);
                             <li><a href="#">about</a></li>
                             <li><a href="#">services</a></li>
                             <li><a href="/albums">collections</a></li>
+                            <li><a href="/journal">Journal</a></li>
                             <li><a href="#">contact</a></li>
                         </ul>
                     </div>

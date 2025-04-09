@@ -27,6 +27,7 @@ Route::get('/about', function () {
 });
 
 Route::get('/journal/', [JournalController::class, 'index'])->name('journal.index');
+Route::get('/journal/{post_id}', [JournalController::class, 'index'])->name('journal.index');
 Route::get('/journal/create', [JournalController::class, 'create'])->name('journal.create');
 Route::post('/journal/store', [JournalController::class, 'store'])->name('journal.store');
 

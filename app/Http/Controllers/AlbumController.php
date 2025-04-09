@@ -44,6 +44,7 @@ class AlbumController extends Controller
         return response()->json([
             'message' => 'Album created successfully',
             'album' => $album
+
         ], 201);
     }
 

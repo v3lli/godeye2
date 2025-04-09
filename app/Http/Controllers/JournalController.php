@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Journal;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -12,10 +13,30 @@ class JournalController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $journal = Journal::all();
-        return Inertia::render('Journals', [
+        $journal = Journal::orderBy('created_at', 'desc')->get();
+
+        $collection = collect($journal);
+        $currentPage = $request->input('page', 1);
+
+        $perPage = 10;
+
+        $currentItems = $collection->slice(($currentPage - 1) * $perPage, $perPage)->all();
+
+        // Create a LengthAwarePaginator instance
+        $paginatedData = new LengthAwarePaginator(
+            $currentItems, // Items for this page
+            $collection->count(), // Total items
+            $perPage, // Items per page
+            $currentPage, // Current page
+            ['path' => $request->url(), 'query' => $request->query()] // Preserve URL parameters
+        );
+
+        // Pass the JSON data to the Inertia page
+
+//        return response()->json($paginatedData);
+        return Inertia::render('Journal', [
             'journals' => $journal,
         ]);
     }
@@ -86,6 +107,10 @@ class JournalController extends Controller
         if (!$journal) {
             return response()->json(['message' => 'Entry not found'], 404);
         }
+
+        return Inertia::render('Posts', [
+            'post' => $journal,
+        ]);
     }
 
     /**

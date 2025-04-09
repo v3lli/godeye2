@@ -45,7 +45,7 @@ class IndexController extends Controller
         // Pass the JSON data to the Inertia page
 
 //        return response()->json($paginatedData);
-        return Inertia::render('Index2', [
+        return Inertia::render('Index', [
             'mediaData' => $paginatedData,
         ]);
     }
