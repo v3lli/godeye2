@@ -103,11 +103,8 @@ class JournalController extends Controller
      */
     public function show($id)
     {
-        $journal = Journal::find($id);
-        if (!$journal) {
-            return response()->json(['message' => 'Entry not found'], 404);
-        }
-
+        $journal = Journal::findOrFail($id);
+        
         return Inertia::render('Posts', [
             'post' => $journal,
         ]);

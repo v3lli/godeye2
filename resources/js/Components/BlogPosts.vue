@@ -1,14 +1,26 @@
 <template>
-    <div class="flex w-full px-5 gap-5 mt-10">
-        <div class="w-1/2 space-y-24 p-20">
-            <div v-for="(item, index) in mediaItems" :key="'first-' + index" class="text-center">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 px-4 max-w-6xl mx-auto mt-10">
+        <div v-for="(item, index) in mediaItems" :key="index" 
+            class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+            <div class="relative h-64 overflow-hidden">
                 <img
                     :src="item.cover_image"
                     :alt="item.title"
-                    class="rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
-                    @click="openPreview(item)"
+                    class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
-                <a href="/journal/{{item.id}}" class="mt-10 text-gray-500">{{ item.title }}</a>
+            </div>
+            <div class="p-8 flex flex-col flex-grow">
+                <h2 class="text-2xl font-semibold mb-2 text-gray-800">{{ item.title }}</h2>
+                <div class="border-t border-b border-gray-200 my-4 py-4">
+                    <p class="text-gray-700 line-clamp-3">{{ getTextPreview(item.text) }}</p>
+                </div>
+                <div class="mt-auto flex justify-between items-center">
+                    <span class="text-sm text-gray-500">{{ formatDate(item.created_at) }}</span>
+                    <a :href="`/journal/${item.id}`" 
+                       class="inline-block bg-indigo-600 text-white px-5 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                        Read More
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -63,9 +75,54 @@ const emit = defineEmits(['itemsAdded']);
 // Store all media items
 const mediaItems = ref(props.items ?? []);
 
-// Compute the items to display in each column
+// Format date
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+    });
+};
 
+// Extract and format text preview from HTML or JSON content
+const getTextPreview = (content) => {
+    if (!content) return 'No content available...';
+    
+    try {
+        // Check if content is HTML
+        if (typeof content === 'string' && content.includes('<')) {
+            // Create a temporary div to parse HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            const text = tempDiv.textContent || tempDiv.innerText || '';
+            return text.slice(0, 150) + (text.length > 150 ? '...' : '');
+        }
+        
+        // Check if content is JSON
+        else if (typeof content === 'string' && (content.startsWith('{') || content.startsWith('['))) {
+            const jsonContent = JSON.parse(content);
+            if (jsonContent.ops) {
+                // Handle Quill Delta format
+                const textParts = jsonContent.ops
+                    .map(op => op.insert)
+                    .filter(text => typeof text === 'string')
+                    .join('');
+                return textParts.slice(0, 150) + (textParts.length > 150 ? '...' : '');
+            }
+            return 'Content available...';
+        }
+        
+        // Plain text
+        return content.slice(0, 150) + (content.length > 150 ? '...' : '');
+    } catch (e) {
+        // If there's an error parsing, return a default
+        return 'Content available...';
+    }
+};
 
+// Watch for new items
 watch(
     () => props.newItems,
     (newItems) => {
@@ -221,3 +278,12 @@ onUnmounted(() => {
     window.removeEventListener("keydown", handleKeyDown);
 });
 </script>
+
+<style scoped>
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>
