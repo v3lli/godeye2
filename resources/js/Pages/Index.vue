@@ -24,6 +24,12 @@ const newItemsToAdd = ref(null);
 // ✅ Loading state
 const isLoading = ref(false);
 
+// Video state
+const isVideoLoading = ref(true);
+const onVideoLoad = () => {
+    isVideoLoading.value = false;
+};
+
 // ** Watcher to detect new data and process it **
 watch(
     () => props.mediaData,
@@ -88,6 +94,30 @@ watchEffect(() => {
     <Head title="Media Gallery" />
     <FillScrNav/>
     <Hero background-style=""/>
+    
+    <!-- Video Section -->
+    <div class="video-container my-16 relative">
+        <!-- Loading Overlay -->
+        <div v-if="isVideoLoading" class="absolute inset-0 bg-gray-100/80 backdrop-blur-sm flex items-center justify-center rounded-xl">
+            <div class="spinner"></div>
+        </div>
+        
+        <div class="video-wrapper">
+            <div class="video-decorative-element"></div>
+            <div class="aspect-video max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl relative">
+                <iframe 
+                    class="w-full h-full"
+                    src="https://www.youtube.com/embed/_6kTGB1kJxo?autoplay=0"
+                    title="YouTube video"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    @load="onVideoLoad"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+    
     <div class="items-center justify-center flex flex-col">
         <span class="my-b mt-10 uppercase text-xl text-gray-500">Current Mood</span>
         <ImageGrid2
@@ -111,6 +141,80 @@ watchEffect(() => {
 </template>
 
 <style scoped>
+.video-container {
+    width: 100%;
+    padding: 0 1rem;
+    position: relative;
+}
+
+.video-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.video-decorative-element {
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #333;
+    border-radius: 1rem;
+    z-index: -1;
+    opacity: 0.1;
+    transform: rotate(-2deg);
+    transition: all 0.3s ease;
+}
+
+.video-wrapper:hover .video-decorative-element {
+    transform: rotate(0deg);
+    opacity: 0.2;
+}
+
+.video-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    left: -1rem;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,0,0,0.05) 0%, transparent 100%);
+    border-radius: 1rem;
+    z-index: -1;
+}
+
+/* Enhanced spinner for video loading */
+.spinner {
+    border: 3px solid rgba(0, 0, 0, 0.05);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border-left-color: #333;
+    animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive padding adjustments */
+@media (max-width: 768px) {
+    .video-container {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .video-decorative-element {
+        display: none;
+    }
+}
+
+/* Keep existing styles */
 .load-more {
     display: block;
     margin: 20px auto;
@@ -126,23 +230,5 @@ watchEffect(() => {
     flex-direction: column;
     align-items: center;
     margin: 20px 0;
-}
-
-.spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border-left-color: #333;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
 }
 </style>
