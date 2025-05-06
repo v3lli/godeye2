@@ -104,7 +104,7 @@ class JournalController extends Controller
     public function show($id)
     {
         $journal = Journal::findOrFail($id);
-        
+
         return Inertia::render('Posts', [
             'post' => $journal,
         ]);

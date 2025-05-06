@@ -7,10 +7,49 @@ import JournalBanner from "@/Components/JournalBanner.vue";
 const props = defineProps({
     post: Object
 });
+
+// Get the first paragraph of text for description
+const getDescription = (content) => {
+    if (!content) return '';
+    
+    try {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        const firstParagraph = tempDiv.querySelector('p');
+        return firstParagraph ? 
+            (firstParagraph.textContent || '').slice(0, 160) + '...' : 
+            content.slice(0, 160) + '...';
+    } catch (e) {
+        return content.slice(0, 160) + '...';
+    }
+};
 </script>
 
 <template>
-    <Head :title="post.title" />
+    <Head>
+        <title>{{ post.title }}</title>
+        <meta name="description" :content="getDescription(post.text)" />
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="article" />
+        <meta property="og:title" :content="post.title" />
+        <meta property="og:description" :content="getDescription(post.text)" />
+        <meta property="og:image" :content="post.cover_image" />
+        <meta property="og:url" :content="`${window.location.origin}/journal/${post.id}`" />
+        <meta property="og:site_name" content="Your Site Name" />
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" :content="post.title" />
+        <meta name="twitter:description" :content="getDescription(post.text)" />
+        <meta name="twitter:image" :content="post.cover_image" />
+        <meta name="twitter:site" content="@YourTwitterHandle" />
+        
+        <!-- Article specific -->
+        <meta property="article:published_time" :content="post.created_at" />
+        <meta property="article:author" content="Your Name" />
+        <meta property="article:section" content="Journal" />
+    </Head>
     <FillScrNav />
     <JournalBanner background-style=""/>
     
@@ -40,7 +79,7 @@ const props = defineProps({
                     
                     <!-- Content -->
                     <div class="border-t border-gray-200 pt-6">
-                        <div class="prose prose-lg max-w-none" v-html="post.text"></div>
+                        <div class="prose" v-html="post.text"></div>
                     </div>
                 </div>
             </div>
@@ -59,18 +98,52 @@ const props = defineProps({
 
 <style>
 /* Additional styling for the content */
-.prose img {
-    border-radius: 0.5rem;
-    margin: 2rem auto;
-}
-
-.prose h2 {
-    margin-top: 2rem;
-    color: #4B5563;
+.prose {
+    font-size: 1.125rem;
+    line-height: 1.4;
+    color: #374151;
 }
 
 .prose p {
-    margin-bottom: 1.5rem;
-    line-height: 1.8;
+    margin-bottom: 0.75rem;
+}
+
+.prose p:last-child {
+    margin-bottom: 0;
+}
+
+.prose img {
+    border-radius: 0.5rem;
+    margin: 1.5rem auto;
+}
+
+.prose h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #1F2937;
+}
+
+/* Override Tailwind prose defaults */
+:deep(.prose) {
+    max-width: none;
+}
+
+:deep(.prose p) {
+    margin: 0 0 0.75rem 0;
+    line-height: 1.4;
+}
+
+:deep(.prose > p) {
+    margin: 0 0 0.75rem 0;
+}
+
+:deep(.prose br) {
+    display: none;
+}
+
+:deep(.prose > p:last-child) {
+    margin-bottom: 0;
 }
 </style> 
