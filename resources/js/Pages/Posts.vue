@@ -1,14 +1,14 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import FillScrNav from "@/Components/FillScrNav.vue";
 import Footer from '@/Components/Footer.vue';
 import JournalBanner from "@/Components/JournalBanner.vue";
+import { onMounted, computed } from 'vue';
 
 const props = defineProps({
     post: Object
 });
 
-// Get the first paragraph of text for description
 const getDescription = (content) => {
     if (!content) return '';
     
@@ -23,6 +23,21 @@ const getDescription = (content) => {
         return content.slice(0, 160) + '...';
     }
 };
+
+// Computed property for the full page URL
+const pageUrl = computed(() => {
+    if (typeof window !== 'undefined') {
+        return `${window.location.origin}/journal/${props.post.id}`;
+    }
+    // Fallback or default value if window is not defined (though for og:url, a full URL is needed)
+    // Inertia's usePage().url might give a relative path. We need the origin.
+    // If your app has a canonical URL set in config, you could use that as a base.
+    // For now, let's rely on client-side execution for this meta tag or it might be empty/incorrect during SSR.
+    const { url } = usePage(); // This gives the current path, e.g., /journal/1
+    // Attempt to get origin from props if passed by controller, or set a default.
+    const baseUrl = props.ziggy?.url || 'https://yourdomain.com'; // Replace with your actual domain or how you get it
+    return `${baseUrl}${url}`;
+});
 </script>
 
 <template>
@@ -35,7 +50,7 @@ const getDescription = (content) => {
         <meta property="og:title" :content="post.title" />
         <meta property="og:description" :content="getDescription(post.text)" />
         <meta property="og:image" :content="post.cover_image" />
-        <meta property="og:url" :content="`${window.location.origin}/journal/${post.id}`" />
+        <meta property="og:url" :content="pageUrl" />
         <meta property="og:site_name" content="Your Site Name" />
         
         <!-- Twitter -->
