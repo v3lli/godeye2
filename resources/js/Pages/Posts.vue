@@ -9,8 +9,6 @@ const props = defineProps({
     post: Object
 });
 
-
-// Get the first paragraph of text for description
 const getDescription = (content) => {
     if (!content) return '';
     
