@@ -17,6 +17,6 @@ const bgImg = computed(() => ({
 <style scoped>
 .landing{
     height: 80vh;
-    background-image: url("https://i.ibb.co/txpgF0T/IMG-1304.jpg");
+    background-image: url("https://i.ibb.co/xt7b8D0X/1304-1.jpg");
 }
 </style>

@@ -8,7 +8,7 @@ import Footer from "@/Components/Footer.vue";
 <template>
     <Head title="About" />
     <FillScrNav/>
-    <div class="w-full flex flex-row pt-4]">
+    <div class="w-full flex flex-row pt-4 body">
         <img class="profile" src="https://i.ibb.co/B21hWq5f/maninthemirror.jpg" alt="self portrait of Emeka ">
         <p class="describe">
             Chukwuemeka Onyejesi is a prolific, versatile photographer; a creative director,  writer, healer and next in line to be the three-eyed raven.
@@ -44,13 +44,21 @@ import Footer from "@/Components/Footer.vue";
     padding: 15px;
     max-width: 34%;
     max-height: 70vh;
+    padding-top: 8em;
 
 }
 .describe{
     padding: 10px;
+    padding-top: 10em;
     max-height: 80%;
     font-size: 0.85rem;
     justify-self: center;
+    color: greenyellow;
+    mix-blend-mode: difference;
+}
 
+.body {
+    background-color: black;
+    background-size: cover;
 }
 </style>

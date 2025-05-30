@@ -24,12 +24,10 @@ const showNav = ref(false);
                     <button @click="showNav = !showNav" type="button" class="close-nav">&times;</button>
                     <div class="nav-inner">
                         <ul>
-                            <li><a href="#">home</a></li>
-                            <li><a href="#">about</a></li>
-                            <li><a href="#">services</a></li>
+                            <li><a href="/">home</a></li>
+                            <li><a href="/about">about</a></li>
                             <li><a href="/albums">collections</a></li>
                             <li><a href="/journal">Journal</a></li>
-                            <li><a href="#">contact</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -43,9 +41,18 @@ const showNav = ref(false);
     max-width: 1170px;
     margin:auto;
 }
+
+.open-nav{
+    mix-blend-mode: difference;
+}
+
+.close-nav{
+    mix-blend-mode: difference;
+}
 .brand-name{
     font-size: 20px;
     padding-left: 1rem;
+    color:whitesmoke;
 }
 .main-header
 {
@@ -83,6 +90,7 @@ const showNav = ref(false);
     background-color: #ffffff;
     height: 2px;
     position: relative;
+
 }
 .header .open-nav span::before,
 .header .open-nav span::after{
