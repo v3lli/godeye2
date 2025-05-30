@@ -33,9 +33,8 @@
 
 
 
-          <li><a href="/home" class="hover:underline">home</a></li>
+          <li><a href="/" class="hover:underline">home</a></li>
           <li><a href="/about" class="hover:underline">about</a></li>
-          <li><a href="/services" class="hover:underline">services</a></li>
           <li><a href="/albums" class="hover:underline">collections</a></li>
 
         </ul>

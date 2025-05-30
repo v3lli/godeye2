@@ -94,18 +94,18 @@ watchEffect(() => {
     <Head title="Media Gallery" />
     <FillScrNav/>
     <Hero background-style=""/>
-    
+
     <!-- Video Section -->
     <div class="video-container my-16 relative">
         <!-- Loading Overlay -->
         <div v-if="isVideoLoading" class="absolute inset-0 bg-gray-100/80 backdrop-blur-sm flex items-center justify-center rounded-xl">
             <div class="spinner"></div>
         </div>
-        
+
         <div class="video-wrapper">
             <div class="video-decorative-element"></div>
             <div class="aspect-video max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl relative">
-                <iframe 
+                <iframe
                     class="w-full h-full"
                     src="https://www.youtube.com/embed/_6kTGB1kJxo?autoplay=0"
                     title="YouTube video"
@@ -117,9 +117,10 @@ watchEffect(() => {
             </div>
         </div>
     </div>
-    
+
     <div class="items-center justify-center flex flex-col">
-        <span class="my-b mt-10 uppercase text-xl text-gray-500">Current Mood</span>
+        <span class="my-b mt-10 uppercase text-xl text-gray-500">Aesthetic Intelligence</span>
+        <span class="my-b mt-2 text-md text-gray-500">A Living MoodBoard</span>
         <ImageGrid2
             :items="mediaItems"
             :new-items="newItemsToAdd"
@@ -208,7 +209,7 @@ watchEffect(() => {
         margin-top: 2rem;
         margin-bottom: 2rem;
     }
-    
+
     .video-decorative-element {
         display: none;
     }
