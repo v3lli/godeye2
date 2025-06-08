@@ -1,26 +1,5 @@
-networks:
-    laravel-network:
-
+version: '3.8'
 services:
-    nginx:
-        build:
-            context: ./docker
-            dockerfile: nginx.dockerfile
-            args:
-                - UID=${UID:-1000}
-                - GID=${GID:-1000}
-                - USER=${USER:-laravel}
-        restart: unless-stopped
-        container_name: nginx
-        ports:
-            - 8000:8000
-        volumes:
-            - ./:/var/www/html
-        depends_on:
-            - php
-        networks:
-            - laravel-network
-
     php:
         build:
             context: ./docker
@@ -29,30 +8,11 @@ services:
                 - UID=${UID:-1000}
                 - GID=${GID:-1000}
                 - USER=${USER:-laravel}
-        ports:
-            - ":9000"
         container_name: php
         volumes:
-            - ./:/var/www/html
-        networks:
-            - laravel-network
-
-    composer:
-        build:
-            context: ./docker
-            dockerfile: composer.dockerfile
-            args:
-                - UID=${UID:-1000}
-                - GID=${GID:-1000}
-                - USER=${USER:-laravel}
-        container_name: composer
-        volumes:
-            - ./:/var/www/html
-        working_dir: /var/www/html
-        depends_on:
-            - php
-        entrypoint: ["composer"]
-        command: ["install", "--ignore-platform-reqs"]
+            - .:/var/www/html
+            - sqlite-data:/var/www/html/database
+            - storage-data:/var/www/html/storage/app
         networks:
             - laravel-network
 
@@ -66,15 +26,42 @@ services:
                 - USER=${USER:-laravel}
         container_name: artisan
         volumes:
-            - ./:/var/www/html
+            - .:/var/www/html
+            - sqlite-data:/var/www/html/database
+            - storage-data:/var/www/html/storage/app
         working_dir: /var/www/html
         depends_on:
             - php
-            - composer
-            - nginx
         entrypoint: ["sh", "-c"]
-        command: >
-            '[ ! -f /var/www/html/.env ] && rm -rf /var/www/html/.env && cp /var/www/html/.env.example /var/www/html/.env; php /var/www/html/artisan key:generate; php /var/www/html/artisan "$@" && php /var/www/html/artisan serve'
+        command: |
+            [ ! -f /var/www/html/.env ] && cp /var/www/html/.env.example /var/www/html/.env && php /var/www/html/artisan key:generate
+            php /var/www/html/artisan serve --host=0.0.0.0 --port=8000
+        ports:
+            - "8000:8000"
+        environment:
+            - APP_ENV=local
+            - APP_DEBUG=true
+        networks:
+            - laravel-network
+
+    nginx:
+        build:
+            context: ./docker
+            dockerfile: nginx.dockerfile
+            args:
+                - UID=${UID:-1000}
+                - GID=${GID:-1000}
+                - USER=${USER:-laravel}
+        restart: unless-stopped
+        container_name: nginx
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/var/www/html
+            - sqlite-data:/var/www/html/database
+            - storage-data:/var/www/html/storage/app
+        depends_on:
+            - php
         networks:
             - laravel-network
 
@@ -82,14 +69,32 @@ services:
         image: node:18-alpine
         container_name: npm
         volumes:
-            - ./:/var/www/html
+            - .:/var/www/html
+            - storage-data:/var/www/html/storage/app
         ports:
-            - "3000:3000"
-            - "3001:3001"
+            - "5173:5173"
         working_dir: /var/www/html
         depends_on:
-            - php
-            - composer
+            - artisan
         command: ["sh", "-c", "npm install && npm run dev"]
         networks:
             - laravel-network
+
+    redis:
+        image: redis:alpine
+        container_name: redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis-data:/data
+        networks:
+            - laravel-network
+
+volumes:
+    sqlite-data:
+    storage-data:
+    redis-data:
+
+networks:
+    laravel-network:
+        driver: bridge
