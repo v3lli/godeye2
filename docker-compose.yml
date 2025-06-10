@@ -30,7 +30,7 @@ services:
                 - GID=${GID:-1000}
                 - USER=${USER:-laravel}
         ports:
-            - ":9000"
+            - "9000"
         container_name: php
         volumes:
             - ./:/var/www/html
@@ -55,7 +55,6 @@ services:
         command: ["install", "--ignore-platform-reqs"]
         networks:
             - laravel-network
-
     artisan:
         build:
             context: ./docker
@@ -72,9 +71,9 @@ services:
             - php
             - composer
             - nginx
-        entrypoint: ["sh", "-c"]
+        entrypoint: [ "sh", "-c" ]
         command: >
-            '[ ! -f /var/www/html/.env ] && rm -rf /var/www/html/.env && cp /var/www/html/.env.example /var/www/html/.env; php /var/www/html/artisan key:generate; php /var/www/html/artisan "$@" && php /var/www/html/artisan serve'
+            '[ ! -f /var/www/html/.env ] && rm -rf /var/www/html/.env && cp /var/www/html/.env.example /var/www/html/.env; php /var/www/html/artisan key:generate; php /var/www/html/artisan "$$@" && php /var/www/html/artisan serve'
         networks:
             - laravel-network
 
