@@ -21,16 +21,22 @@ WORKDIR /var/www/html
 
 # Copy application code
 COPY . .
-
+COPY .env.local .env
 # Install Laravel dependencies
 RUN composer install --optimize-autoloader --no-dev
 
 # Install Node dependencies and build frontend
 RUN npm install && npm run build
 
+RUN mkdir -p storage/database && \
+    touch storage/database/database.sqlite && \
+    chmod -R 775 storage && \
+    chmod 666 storage/database/database.sqlite
+
 # Set permissions
 RUN chmod -R 777 storage bootstrap/cache
 
+RUN php artisan key:generate && php artisan config:cache && php artisan migrate --force && php artisan storage:link && php artisan route:cache && php artisan view:cache
 # NGINX site config
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 

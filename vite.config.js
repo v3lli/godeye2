@@ -3,6 +3,7 @@ import laravel from "laravel-vite-plugin";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+    base: '/build/',
     plugins: [
         laravel({
             input: "resources/js/app.js",
@@ -23,5 +24,5 @@ export default defineConfig({
         hmr: {
             host: "localhost",
         },
-    },
+    }
 });
