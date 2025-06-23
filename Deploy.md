@@ -30,6 +30,7 @@ sudo docker build -t godeyeacr.azurecr.io/laravel-app:latest .
 ### 3. Run the Docker container
 
 ```bash
+sudo docker stop laravel-app && sudo docker rm laravel-app
 sudo docker run -p 80:80 godeyeacr.azurecr.io/laravel-app:latest
 ```
 
