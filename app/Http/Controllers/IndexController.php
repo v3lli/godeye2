@@ -39,7 +39,7 @@ class IndexController extends Controller
             $collection->count(), // Total items
             $perPage, // Items per page
             $currentPage, // Current page
-            ['path' => $request->url(), 'query' => $request->query()] // Preserve URL parameters
+            ['path' => preg_replace('/^http:/', 'https:', $request->url()), 'query' => $request->query()] // Preserve URL parameters
         );
 
         // Pass the JSON data to the Inertia page
