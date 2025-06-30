@@ -18,7 +18,7 @@ const props = defineProps({
     <FillScrNav/>
     <JournalBanner background-style=""/>
     <div class="items-center justify-center flex flex-col">
-        <span class="my-b mt-10 uppercase text-xl text-gray-500">Journal</span>
+        <span class="my-b mt-6 sm:mt-8 md:mt-10 uppercase text-lg sm:text-xl text-gray-500">Journal</span>
         <BlogPosts :items="journals"/>
     </div>
     <Footer />

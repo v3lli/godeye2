@@ -96,7 +96,7 @@ watchEffect(() => {
     <Hero background-style=""/>
 
     <!-- Video Section -->
-    <div class="video-container my-16 relative">
+    <div class="video-container my-8 sm:my-12 md:my-16 relative">
         <!-- Loading Overlay -->
         <div v-if="isVideoLoading" class="absolute inset-0 bg-gray-100/80 backdrop-blur-sm flex items-center justify-center rounded-xl">
             <div class="spinner"></div>
@@ -104,7 +104,7 @@ watchEffect(() => {
 
         <div class="video-wrapper">
             <div class="video-decorative-element"></div>
-            <div class="aspect-video max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl relative">
+            <div class="aspect-video max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto rounded-xl overflow-hidden shadow-2xl relative">
                 <iframe
                     class="w-full h-full"
                     src="https://www.youtube.com/embed/_6kTGB1kJxo?autoplay=0"
@@ -119,8 +119,8 @@ watchEffect(() => {
     </div>
 
     <div class="items-center justify-center flex flex-col">
-        <span class="my-b mt-10 uppercase text-xl text-gray-500">Aesthetic Intelligence</span>
-        <span class="my-b mt-2 text-md text-gray-500">A Living MoodBoard</span>
+        <span class="my-b mt-6 sm:mt-8 md:mt-10 uppercase text-lg sm:text-xl text-gray-500">Aesthetic Intelligence</span>
+        <span class="my-b mt-2 text-sm sm:text-base text-gray-500">A Living MoodBoard</span>
         <ImageGrid2
             :items="mediaItems"
             :new-items="newItemsToAdd"
@@ -130,7 +130,7 @@ watchEffect(() => {
         <!-- Loading spinner -->
         <div v-if="isLoading" class="spinner-container">
             <div class="spinner"></div>
-            <p class="mt-3 text-gray-500">Loading more images...</p>
+            <p class="mt-3 text-sm sm:text-base text-gray-500">Loading more images...</p>
         </div>
 
         <!-- Only show load more button when not loading -->
@@ -144,8 +144,20 @@ watchEffect(() => {
 <style scoped>
 .video-container {
     width: 100%;
-    padding: 0 1rem;
+    padding: 0 0.75rem;
     position: relative;
+}
+
+@media (min-width: 640px) {
+    .video-container {
+        padding: 0 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .video-container {
+        padding: 0 1.5rem;
+    }
 }
 
 .video-wrapper {
@@ -155,8 +167,8 @@ watchEffect(() => {
 
 .video-decorative-element {
     position: absolute;
-    top: -1rem;
-    right: -1rem;
+    top: -0.5rem;
+    right: -0.5rem;
     width: 100%;
     height: 100%;
     border: 2px solid #333;
@@ -167,6 +179,19 @@ watchEffect(() => {
     transition: all 0.3s ease;
 }
 
+@media (min-width: 640px) {
+    .video-decorative-element {
+        top: -1rem;
+        right: -1rem;
+    }
+}
+
+@media (max-width: 639px) {
+    .video-decorative-element {
+        display: none;
+    }
+}
+
 .video-wrapper:hover .video-decorative-element {
     transform: rotate(0deg);
     opacity: 0.2;
@@ -175,8 +200,8 @@ watchEffect(() => {
 .video-wrapper::before {
     content: '';
     position: absolute;
-    top: 1rem;
-    left: -1rem;
+    top: 0.5rem;
+    left: -0.5rem;
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, rgba(0,0,0,0.05) 0%, transparent 100%);
@@ -184,14 +209,34 @@ watchEffect(() => {
     z-index: -1;
 }
 
+@media (min-width: 640px) {
+    .video-wrapper::before {
+        top: 1rem;
+        left: -1rem;
+    }
+}
+
+@media (max-width: 639px) {
+    .video-wrapper::before {
+        display: none;
+    }
+}
+
 /* Enhanced spinner for video loading */
 .spinner {
     border: 3px solid rgba(0, 0, 0, 0.05);
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     border-left-color: #333;
     animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (min-width: 640px) {
+    .spinner {
+        width: 40px;
+        height: 40px;
+    }
 }
 
 @keyframes spin {
@@ -203,33 +248,42 @@ watchEffect(() => {
     }
 }
 
-/* Responsive padding adjustments */
-@media (max-width: 768px) {
-    .video-container {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .video-decorative-element {
-        display: none;
-    }
-}
-
 /* Keep existing styles */
 .load-more {
     display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
+    margin: 16px auto;
+    padding: 8px 16px;
     background-color: #333;
     color: white;
     border: none;
     cursor: pointer;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease;
+}
+
+@media (min-width: 640px) {
+    .load-more {
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+
+.load-more:hover {
+    background-color: #1f2937;
 }
 
 .spinner-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 20px 0;
+    margin: 16px 0;
+}
+
+@media (min-width: 640px) {
+    .spinner-container {
+        margin: 20px 0;
+    }
 }
 </style>

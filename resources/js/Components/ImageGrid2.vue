@@ -90,23 +90,22 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="flex w-full px-5 gap-5 mt-10">
-        <div class="w-1/2 space-y-24 p-20">
+    <div class="flex flex-col lg:flex-row w-full px-3 sm:px-4 md:px-5 gap-3 sm:gap-4 md:gap-5 mt-6 sm:mt-8 md:mt-10">
+        <div class="w-full lg:w-1/2 space-y-8 sm:space-y-12 md:space-y-16 lg:space-y-20 xl:space-y-24 p-3 sm:p-6 md:p-10 lg:p-16 xl:p-20">
             <div v-for="(item, index) in firstColumn" :key="'first-' + index" class="text-center">
                 <img
                     :src="item.image_url"
                     :alt="item.text"
-                    class="rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
-                    style="width: auto; height: auto; max-width: 100%; max-height: 100%;"
+                    class="rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition w-full"
                     @click="openPreview(index * 2)"
                 />
-                <p class="mt-10 text-gray-500">{{ item.text }}</p>
+                <p class="mt-4 sm:mt-6 md:mt-8 lg:mt-10 text-sm sm:text-base text-gray-500">{{ item.text }}</p>
             </div>
         </div>
 
-        <div class="w-[4px] bg-gray-200"></div>
+        <div class="hidden lg:block w-[4px] bg-gray-200"></div>
 
-        <div class="w-1/2 space-y-24 p-20">
+        <div class="w-full lg:w-1/2 space-y-8 sm:space-y-12 md:space-y-16 lg:space-y-20 xl:space-y-24 p-3 sm:p-6 md:p-10 lg:p-16 xl:p-20">
             <div v-for="(item, index) in secondColumn" :key="'second-' + index" class="text-center">
                 <img
                     :src="item.image_url"
@@ -114,28 +113,28 @@ onUnmounted(() => {
                     class="w-full rounded-lg shadow-2xl cursor-pointer hover:opacity-80 transition"
                     @click="openPreview(index * 2 + 1)"
                 />
-                <p class="mt-2 text-gray-500">{{ item.text }}</p>
+                <p class="mt-2 sm:mt-3 md:mt-4 lg:mt-6 text-sm sm:text-base text-gray-500">{{ item.text }}</p>
             </div>
         </div>
     </div>
 
     <!-- Image preview modal -->
-    <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-        <div class="relative p-5 w-full max-w-2xl">
-            <button @click="closePreview" class="absolute top-5 right-10 text-white text-3xl">&times;</button>
+    <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-2 sm:p-4">
+        <div class="relative w-full max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-2xl xl:max-w-4xl">
+            <button @click="closePreview" class="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-5 md:right-5 lg:right-10 text-white text-xl sm:text-2xl md:text-3xl z-10">&times;</button>
 
-            <img :src="selectedImage" class="w-full h-full rounded-lg shadow-lg"/>
+            <img :src="selectedImage" class="w-full h-auto max-h-[85vh] sm:max-h-[90vh] object-contain rounded-lg shadow-lg"/>
 
             <button
                 v-if="currentIndex > 0"
                 @click="prevImage"
-                class="absolute left-7 top-1/2 transform -translate-y-1/2 text-white text-3xl bg-gray-700 bg-opacity-50 p-2 rounded-full hover:bg-opacity-75">
+                class="absolute left-2 sm:left-3 md:left-5 lg:left-7 top-1/2 transform -translate-y-1/2 text-white text-lg sm:text-xl md:text-2xl lg:text-3xl bg-gray-700 bg-opacity-50 p-1 sm:p-1.5 md:p-2 rounded-full hover:bg-opacity-75">
                 &#10094;
             </button>
             <button
                 v-if="currentIndex < mediaItems.length - 1"
                 @click="nextImage"
-                class="absolute right-7 top-1/2 transform -translate-y-1/2 text-white text-3xl bg-gray-700 bg-opacity-50 p-2 rounded-full hover:bg-opacity-75">
+                class="absolute right-2 sm:right-3 md:right-5 lg:right-7 top-1/2 transform -translate-y-1/2 text-white text-lg sm:text-xl md:text-2xl lg:text-3xl bg-gray-700 bg-opacity-50 p-1 sm:p-1.5 md:p-2 rounded-full hover:bg-opacity-75">
                 &#10095;
             </button>
         </div>

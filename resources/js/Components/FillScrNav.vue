@@ -13,7 +13,7 @@ const showNav = ref(false);
         <div class="container">
             <div class=" header flex flex-row justify-between align-middle">
                 <div class="brand-name">
-                    <Link href="/">
+                    <Link href="/" @click="showNav = false">
                         <strong> Emeka Onyejesi ™ </strong>
                     </Link>
                 </div>
@@ -24,10 +24,10 @@ const showNav = ref(false);
                     <button @click="showNav = !showNav" type="button" class="close-nav">&times;</button>
                     <div class="nav-inner">
                         <ul>
-                            <li><a href="/">home</a></li>
-                            <li><a href="/about">about</a></li>
-                            <li><a href="/albums">collections</a></li>
-                            <li><a href="/journal">Journal</a></li>
+                            <li><a href="/" @click="showNav = false">home</a></li>
+                            <li><a href="/about" @click="showNav = false">about</a></li>
+                            <li><a href="/albums" @click="showNav = false">collections</a></li>
+                            <li><a href="/journal" @click="showNav = false">Journal</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -40,6 +40,19 @@ const showNav = ref(false);
 .container{
     max-width: 1170px;
     margin:auto;
+    padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: 0 2rem;
+    }
 }
 
 .open-nav{
@@ -50,15 +63,30 @@ const showNav = ref(false);
     mix-blend-mode: difference;
 }
 .brand-name{
-    font-size: 20px;
-    padding-left: 1rem;
+    font-size: 1rem;
+    padding-left: 0.5rem;
     color:whitesmoke;
 }
+
+@media (min-width: 640px) {
+    .brand-name {
+        font-size: 1.125rem;
+        padding-left: 0.75rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .brand-name {
+        font-size: 1.25rem;
+        padding-left: 1rem;
+    }
+}
+
 .main-header
 {
-    height: 30px;
+    height: 60px;
     width: 100%;
-    padding: 3rem;
+    padding: 1.5rem;
     z-index:2;
     /*background-color: transparent;*/
     /* background: rgba(14, 13, 13, 0.43); */
@@ -66,6 +94,26 @@ const showNav = ref(false);
     color: whitesmoke;
     border-bottom: 3px solid transparent ;
     transition: border-bottom 1s;
+}
+
+@media (min-width: 640px) {
+    .main-header {
+        height: 70px;
+        padding: 2rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .main-header {
+        height: 80px;
+        padding: 2.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .main-header {
+        padding: 3rem;
+    }
 }
 
 .main-header:hover{
@@ -83,15 +131,32 @@ const showNav = ref(false);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0.5rem;
+    min-height: 44px;
+    min-width: 44px;
 }
+
+@media (min-width: 640px) {
+    .header .open-nav {
+        height: 38px;
+        width: 48px;
+    }
+}
+
 .header .open-nav span{
     display: inline-block;
-    width: 20px;
+    width: 18px;
     background-color: #ffffff;
     height: 2px;
     position: relative;
-
 }
+
+@media (min-width: 640px) {
+    .header .open-nav span {
+        width: 20px;
+    }
+}
+
 .header .open-nav span::before,
 .header .open-nav span::after{
     content: '';
@@ -110,7 +175,9 @@ const showNav = ref(false);
     transform: translateY(6px);
 }
 .header .open-nav:hover span::before,
-.header .open-nav:hover span::after{
+.header .open-nav:hover span::after,
+.header .open-nav:focus span::before,
+.header .open-nav:focus span::after{
     width: 100%;
 }
 .header .nav{
@@ -130,19 +197,49 @@ const showNav = ref(false);
 }
 .header .nav .close-nav{
     position: absolute;
-    right:3.5rem;
-    top:2rem;
+    right: 1.5rem;
+    top: 1rem;
     background-color: transparent;
     height: 40px;
     width: 40px;
     border:none;
     cursor: pointer;
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #ffffff;
     transition: all 0.3s ease;
     transform: translateY(-55px);
     opacity:0;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+@media (min-width: 640px) {
+    .header .nav .close-nav {
+        right: 2rem;
+        top: 1.5rem;
+        font-size: 2.25rem;
+        height: 44px;
+        width: 44px;
+    }
+}
+
+@media (min-width: 768px) {
+    .header .nav .close-nav {
+        right: 2.5rem;
+        top: 2rem;
+        font-size: 2.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .header .nav .close-nav {
+        right: 3.5rem;
+    }
+}
+
 .header .nav.open .close-nav{
     transform: translateY(0px);
     opacity: 1;
@@ -153,8 +250,27 @@ const showNav = ref(false);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px;
+    padding: 2rem;
 }
+
+@media (min-width: 640px) {
+    .header .nav-inner {
+        padding: 3rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .header .nav-inner {
+        padding: 4rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .header .nav-inner {
+        padding: 60px;
+    }
+}
+
 .header .nav ul{
     transform: translateX(-80px);
     opacity: 0;
@@ -166,16 +282,53 @@ const showNav = ref(false);
     transition-delay: 0.5s;
 }
 .header .nav ul li{
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-align: center;
 }
+
+@media (min-width: 640px) {
+    .header .nav ul li {
+        margin-bottom: 25px;
+    }
+}
+
+@media (min-width: 768px) {
+    .header .nav ul li {
+        margin-bottom: 30px;
+    }
+}
+
 .header .nav ul li a{
     display: inline-block;
-    font-size: 35px;
+    font-size: 1.5rem;
     color:#ffffff;
     text-transform: capitalize;
     position: relative;
+    padding: 0.5rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+@media (min-width: 640px) {
+    .header .nav ul li a {
+        font-size: 2rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .header .nav ul li a {
+        font-size: 2.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .header .nav ul li a {
+        font-size: 2.5rem;
+    }
+}
+
 .header .nav ul li a::before{
     content: '';
     position: absolute;
@@ -186,7 +339,8 @@ const showNav = ref(false);
     width:0%;
     transition: all 0.3s ease;
 }
-.header .nav ul li a:hover::before{
+.header .nav ul li a:hover::before,
+.header .nav ul li a:focus::before{
     width: 100%;
 }
 </style>
